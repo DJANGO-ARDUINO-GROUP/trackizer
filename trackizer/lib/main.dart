@@ -34,80 +34,6 @@ class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _amountController = TextEditingController();
 
-  Future<void> _addExpense() async {
-    final response = await http.post(
-      Uri.parse('http://127.0.0.1:8000/api/expenses/'),
-      body: {
-        'title': _titleController.text,
-        'amount': _amountController.text,
-        // Assuming you have a default category and account, you may need to modify this part
-        'category': '1', // Replace with the actual category ID
-        'account': '1', // Replace with the actual account ID
-      },
-    );
-
-    if (response.statusCode == 201) {
-      if (kDebugMode) {
-        print('Expense added successfully!');
-      }
-    } else {
-      if (kDebugMode) {
-        print('Failed to add expense. Status code: ${response.statusCode}');
-      }
-    }
-  }
-
-  Future<void> _getExpenses() async {
-    final response =
-        await http.get(Uri.parse('http://127.0.0.1:8000/api/expenses/'));
-
-    if (response.statusCode == 200) {
-      final List<dynamic> data = jsonDecode(response.body);
-      // Handle the fetched data as needed
-      if (kDebugMode) {
-        print(data);
-      }
-    } else {
-      if (kDebugMode) {
-        print('Failed to fetch expenses. Status code: ${response.statusCode}');
-      }
-    }
-  }
-
-  Future<void> _updateExpense(int expenseId) async {
-    final response = await http.put(
-      Uri.parse('http://127.0.0.1:8000/api/expenses/$expenseId/'),
-      body: {
-        'title': 'Updated Title',
-        'amount': '50.0', // Replace with the new amount
-      },
-    );
-
-    if (response.statusCode == 200) {
-      if (kDebugMode) {
-        print('Expense updated successfully!');
-      }
-    } else {
-      if (kDebugMode) {
-        print('Failed to update expense. Status code: ${response.statusCode}');
-      }
-    }
-  }
-
-  Future<void> _deleteExpense(int expenseId) async {
-    final response = await http
-        .delete(Uri.parse('http://127.0.0.1:8000/api/expenses/$expenseId/'));
-
-    if (response.statusCode == 204) {
-      if (kDebugMode) {
-        print('Expense deleted successfully!');
-      }
-    } else {
-      if (kDebugMode) {
-        print('Failed to delete expense. Status code: ${response.statusCode}');
-      }
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -203,7 +129,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               const SizedBox(height: 16),
               GestureDetector(
-                onTap: _addExpense,
+                onTap: (){},
                 child: Container(
                   margin: const EdgeInsets.symmetric(horizontal: 30),
                   width: double.infinity,
