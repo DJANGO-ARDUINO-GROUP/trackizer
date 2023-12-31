@@ -13,7 +13,7 @@ from .models import Category, UserProfile, Expense
 from .serializers import UserSerializer, CategorySerializer, UserProfileSerializer, ExpenseSerializer
 
 
-@api_view(['POST'])
+@api_view(['POST', 'OPTIONS'])
 @permission_classes([AllowAny])
 def login(request):
     user = get_object_or_404(User, username=request.data['username'])
