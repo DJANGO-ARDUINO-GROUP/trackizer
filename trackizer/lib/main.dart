@@ -64,25 +64,25 @@ class _MyHomePageState extends State<MyHomePage> {
                 'Your Balance',
                 style: TextStyle(fontWeight: FontWeight.w500),
               ),
-              // FutureBuilder(
-              //     future: djangoApiClient.getCurrentUser(),
-              //     builder: (context, snapshot) {
-              //       if (snapshot.hasData) {
-              //         return const Text(
-              //           'There is Balance',
-              //           style: TextStyle(
-              //               fontWeight: FontWeight.bold, fontSize: 22),
-              //         );
-              //       } else if (snapshot.connectionState ==
-              //           ConnectionState.waiting) {
-              //         return const CircularProgressIndicator();
-              //       }
-              //       return const Text(
-              //         'Balance',
-              //         style:
-              //             TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
-              //       );
-              //     }),
+              FutureBuilder(
+                  future: djangoApiClient.getCurrentUser(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData == true) {
+                      return const Text(
+                        'There is Balance',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 22),
+                      );
+                    } else if (snapshot.connectionState ==
+                        ConnectionState.waiting) {
+                      return const CircularProgressIndicator();
+                    }
+                    return const Text(
+                      '',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+                    );
+                  }),
               const SizedBox(height: 20),
               Container(
                 decoration: const BoxDecoration(
