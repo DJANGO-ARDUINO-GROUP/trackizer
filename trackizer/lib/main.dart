@@ -1,7 +1,6 @@
-import 'dart:convert';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:get/get.dart';
+import 'package:trackizer/api_client.dart';
 import 'package:trackizer/widgets/expense_custom_txt_field.dart';
 import 'package:trackizer/widgets/expense_tile.dart';
 import 'package:trackizer/widgets/income_exp_detail.dart';
@@ -15,7 +14,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return const GetMaterialApp(
       debugShowCheckedModeBanner: false,
       home: MyHomePage(),
     );
@@ -33,12 +32,23 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _amountController = TextEditingController();
-
+  final DjangoApiClient djangoApiClient = DjangoApiClient();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        actions: [
+          TextButton(
+            onPressed: () {
+              djangoApiClient.logOut();
+            },
+            child: const Text(
+              'Logout',
+              style: TextStyle(fontWeight: FontWeight.w500),
+            ),
+          )
+        ],
         title: const Text(
           'Expense Tracker',
           style: TextStyle(fontWeight: FontWeight.w500),
@@ -54,10 +64,25 @@ class _MyHomePageState extends State<MyHomePage> {
                 'Your Balance',
                 style: TextStyle(fontWeight: FontWeight.w500),
               ),
-              const Text(
-                'Balance',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
-              ),
+              // FutureBuilder(
+              //     future: djangoApiClient.getCurrentUser(),
+              //     builder: (context, snapshot) {
+              //       if (snapshot.hasData) {
+              //         return const Text(
+              //           'There is Balance',
+              //           style: TextStyle(
+              //               fontWeight: FontWeight.bold, fontSize: 22),
+              //         );
+              //       } else if (snapshot.connectionState ==
+              //           ConnectionState.waiting) {
+              //         return const CircularProgressIndicator();
+              //       }
+              //       return const Text(
+              //         'Balance',
+              //         style:
+              //             TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+              //       );
+              //     }),
               const SizedBox(height: 20),
               Container(
                 decoration: const BoxDecoration(
@@ -129,7 +154,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               const SizedBox(height: 16),
               GestureDetector(
-                onTap: (){},
+                onTap: () {},
                 child: Container(
                   margin: const EdgeInsets.symmetric(horizontal: 30),
                   width: double.infinity,

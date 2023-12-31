@@ -1,13 +1,19 @@
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:trackizer/login_screen.dart';
 import 'package:trackizer/secure_storage.dart';
+import 'package:get/get.dart';
 
 class DjangoApiClient {
-  final String baseUrl = 'http://127.0.0.1:8000/api/';
+  final String baseUrl = 'http://127.0.0.1:8000/api';
   final SecureStorage secureStorage = SecureStorage();
 
-  Future loginUser(String username, String password) async {
+  Future logOut() async {
+    await secureStorage.deleteSecureData("auth_token");
+    Get.offAll(() => const LoginScreen());
+  }
+
+  Future<void> loginUser(String username, String password) async {
     final response = await http.post(
       Uri.parse('$baseUrl/login/'),
       headers: {'Content-Type': 'application/json'},
@@ -15,15 +21,16 @@ class DjangoApiClient {
     );
 
     if (response.statusCode == 200) {
-      final loginResponse = jsonDecode(response.body);
-      secureStorage.writeSecureData("auth_token", loginResponse['token']);
-      print(loginResponse['token']);
-    } else {
-      throw Exception('Failed to login');
-    }
+      print(jsonDecode(response.body));
+      // final loginResponse = jsonDecode(response.body);
+      // await secureStorage.writeSecureData("auth_token", loginResponse['token']);
+      // print(loginResponse['token']);
+    } 
+    return;
   }
 
-  Future<Map<String, dynamic>> registerUser(Map<String, dynamic> userData) async {
+  Future<Map<String, dynamic>> registerUser(
+      Map<String, dynamic> userData) async {
     final response = await http.post(
       Uri.parse('$baseUrl/register_user/'),
       headers: {'Content-Type': 'application/json'},
@@ -51,7 +58,8 @@ class DjangoApiClient {
     }
   }
 
-  Future<Map<String, dynamic>> createCategory(Map<String, dynamic> categoryData) async {
+  Future<Map<String, dynamic>> createCategory(
+      Map<String, dynamic> categoryData) async {
     final token = secureStorage.readSecureData("auth_token");
     final response = await http.post(
       Uri.parse('$baseUrl/category_list_create/'),
@@ -85,6 +93,20 @@ class DjangoApiClient {
     final token = secureStorage.readSecureData("auth_token");
     final response = await http.get(
       Uri.parse('$baseUrl/accounts/'),
+      headers: {'Authorization': 'Token $token'},
+    );
+
+    if (response.statusCode == 200) {
+      return List<Map<String, dynamic>>.from(jsonDecode(response.body));
+    } else {
+      throw Exception('Failed to fetch accounts');
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> getCurrentUser() async {
+    final token = secureStorage.readSecureData("auth_token");
+    final response = await http.get(
+      Uri.parse('$baseUrl/get_current_user_profile/'),
       headers: {'Authorization': 'Token $token'},
     );
 
@@ -169,5 +191,4 @@ class DjangoApiClient {
   //     }
   //   }
   // }
-
 }
