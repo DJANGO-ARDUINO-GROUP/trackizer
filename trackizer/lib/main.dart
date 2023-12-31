@@ -1,22 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:trackizer/api_client.dart';
+import 'package:trackizer/secure_storage.dart';
+import 'package:trackizer/sign_up_page.dart';
 import 'package:trackizer/widgets/expense_custom_txt_field.dart';
 import 'package:trackizer/widgets/expense_tile.dart';
 import 'package:trackizer/widgets/income_exp_detail.dart';
 
-void main() {
+void main() async {
   runApp(const MyApp());
 }
+
+final SecureStorage secureStorage = SecureStorage();
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const GetMaterialApp(
+    return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      home: MyHomePage(),
+      home:
+          //secureStorage.readSecureData("auth_token"). ? SignUpScreen() :
+          MyHomePage(),
     );
   }
 }
@@ -32,6 +38,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _amountController = TextEditingController();
+  final TextEditingController _catNameController = TextEditingController();
   final DjangoApiClient djangoApiClient = DjangoApiClient();
 
   @override
@@ -67,10 +74,10 @@ class _MyHomePageState extends State<MyHomePage> {
               FutureBuilder(
                   future: djangoApiClient.getCurrentUser(),
                   builder: (context, snapshot) {
-                    if (snapshot.hasData == true) {
-                      return const Text(
-                        'There is Balance',
-                        style: TextStyle(
+                    if (snapshot.hasData) {
+                      return Text(
+                        snapshot.data['balance'].toString(),
+                        style: const TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 22),
                       );
                     } else if (snapshot.connectionState ==
@@ -78,7 +85,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       return const CircularProgressIndicator();
                     }
                     return const Text(
-                      '',
+                      'balance',
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
                     );
@@ -88,17 +95,19 @@ class _MyHomePageState extends State<MyHomePage> {
                 decoration: const BoxDecoration(
                     color: Colors.white, boxShadow: [BoxShadow()]),
                 height: 100,
-                child: const Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     incomeExpDet(
                       title: 'BALANCE',
                       amount: "\$000",
+                      future: djangoApiClient.getCurrentUser(),
                       amountColor: Colors.green,
                     ),
                     incomeExpDet(
                       title: 'EXPENSES',
                       amount: "\$000",
+                      future: djangoApiClient.getCurrentUser(),
                       amountColor: Colors.red,
                     ),
                   ],
@@ -110,13 +119,73 @@ class _MyHomePageState extends State<MyHomePage> {
                 style: TextStyle(fontWeight: FontWeight.w500),
               ),
               const Divider(),
-              ListView.builder(
-                shrinkWrap: true,
-                itemCount: 4,
-                itemBuilder: (BuildContext context, int index) {
-                  return const ExpenseTile();
+              FutureBuilder(
+                future: djangoApiClient.getExpenses(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    List<dynamic> data = snapshot.data;
+                    print(data);
+                    if (data.isEmpty) {
+                      return const Text("No expenses");
+                    }
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: data.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return const ExpenseTile();
+                      },
+                    );
+                  } else if (snapshot.connectionState ==
+                      ConnectionState.waiting) {
+                    return const CircularProgressIndicator();
+                  }
+                  return const Text(
+                    'Error',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+                  );
                 },
               ),
+
+              const SizedBox(height: 20),
+              const Text(
+                'Add Category',
+                style: TextStyle(fontWeight: FontWeight.w500),
+              ),
+              const Divider(),
+              const SizedBox(height: 20),
+              const Text(
+                'Name',
+                style: TextStyle(fontWeight: FontWeight.w500),
+              ),
+              ExpenseCustomTxtField(
+                controller: _catNameController,
+                labelText: 'Category Name',
+              ),
+              GestureDetector(
+                onTap: () {
+                  djangoApiClient.createCategory(
+                    {
+                      "name": "${_catNameController.text}",
+                    },
+                  );
+                },
+                child: Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 30),
+                  width: 200,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                  decoration: BoxDecoration(
+                      color: Colors.deepPurpleAccent,
+                      borderRadius: BorderRadius.circular(10)),
+                  child: const Center(
+                    child: Text(
+                      'Add Category',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ),
+              ),
+
               const SizedBox(height: 20),
               const Text(
                 'Add New Expense',
@@ -195,9 +264,6 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
-
-
-
 
 // {
 //   "title":"titleController.text",

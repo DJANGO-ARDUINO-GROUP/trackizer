@@ -1,17 +1,19 @@
-
 import 'package:flutter/material.dart';
+import 'package:trackizer/api_client.dart';
 
 class incomeExpDet extends StatelessWidget {
-  const incomeExpDet({
+  incomeExpDet({
     super.key,
     required this.title,
     required this.amount,
     required this.amountColor,
+    this.future,
   });
   final String title;
   final String amount;
   final Color amountColor;
-
+  final Future<dynamic>? future;
+  final DjangoApiClient djangoApiClient = DjangoApiClient();
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -23,14 +25,30 @@ class incomeExpDet extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        Text(
-          amount,
-          style: TextStyle(
-            fontWeight: FontWeight.w500,
-            fontSize: 22,
-            color: amountColor,
-          ),
-        ),
+        FutureBuilder(
+            future: future,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return Text(
+                  snapshot.data['balance'].toString(),
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 22,
+                    color: amountColor,
+                  ),
+                );
+              } else if (snapshot.connectionState == ConnectionState.waiting) {
+                return const CircularProgressIndicator();
+              }
+              return Text(
+                '"\$000"',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 22,
+                  color: amountColor,
+                ),
+              );
+            }),
       ],
     );
   }

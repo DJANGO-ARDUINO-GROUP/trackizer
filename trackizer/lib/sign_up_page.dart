@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:trackizer/api_client.dart';
 import 'package:trackizer/widgets/expense_custom_txt_field.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _pwdController = TextEditingController();
   final DjangoApiClient djangoApiClient = DjangoApiClient();
@@ -30,7 +30,7 @@ class _LoginScreenState extends State<LoginScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                'LOG IN',
+                'SIGN UP',
                 style: TextStyle(fontWeight: FontWeight.w500),
               ),
               const Text(
