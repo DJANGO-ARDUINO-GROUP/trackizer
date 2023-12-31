@@ -36,7 +36,7 @@ ALLOWED_HOSTS = ['.vercel.app', '.onrender.com', 'group-api.onrender.com','127.0
 
 INSTALLED_APPS = [
     'rest_framework',
-    'corsheaders',
+    # 'corsheaders',
     'rest_framework.authtoken',
     'rest_framework_simplejwt',
     'tracker',
@@ -51,7 +51,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
+    # 'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -59,26 +59,26 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    'http://localhost:50731',# Replace with your Flutter app's origin
-    "http://127.0.0.1:3000",  # Add any additional origins if needed
-]
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:3000",
+#     'http://localhost:50731',# Replace with your Flutter app's origin
+#     "http://127.0.0.1:3000",  # Add any additional origins if needed
+# ]
 
-# Optional: You can further customize CORS settings if needed
-# For example, you might want to allow credentials, headers, etc.
-CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOW_HEADERS = [
-    'accept',
-    'accept-encoding',
-    'authorization',
-    'content-type',
-    'dnt',
-    'origin',
-    'user-agent',
-    'x-csrftoken',
-    'x-requested-with',
-]
+# # Optional: You can further customize CORS settings if needed
+# # For example, you might want to allow credentials, headers, etc.
+# CORS_ALLOW_CREDENTIALS = True
+# CORS_ALLOW_HEADERS = [
+#     'accept',
+#     'accept-encoding',
+#     'authorization',
+#     'content-type',
+#     'dnt',
+#     'origin',
+#     'user-agent',
+#     'x-csrftoken',
+#     'x-requested-with',
+# ]
 
 ROOT_URLCONF = 'tracker.urls'
 
@@ -110,15 +110,6 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-# if not DEBUG:
-#     DATABASES = {'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))}
-# else:
-#     DATABASES = {
-#         'default': {
-#             'ENGINE': 'django.db.backends.sqlite3',
-#             'NAME': 'db.sqlite3',
-#         }
-#     }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
