@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:trackizer/login_screen.dart';
+import 'package:trackizer/main.dart';
 import 'package:trackizer/secure_storage.dart';
 import 'package:get/get.dart';
 
@@ -13,23 +14,27 @@ class DjangoApiClient {
     Get.offAll(() => const LoginScreen());
   }
 
-  Future<void> loginUser(String username, String password) async {
-    final response = await http.post(
-      Uri.parse('$baseUrl/login/'),
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': '*/*',
-      },
-      body: jsonEncode({'username': username, 'password': password}),
-    );
+  Future loginUser(String username, String password) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/login/'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': '*/*',
+        },
+        body: jsonEncode({'username': username, 'password': password}),
+      );
 
-    if (response.statusCode == 200) {
-      print(jsonDecode(response.body));
-      // final loginResponse = jsonDecode(response.body);
-      // await secureStorage.writeSecureData("auth_token", loginResponse['token']);
-      // print(loginResponse['token']);
+      if (response.statusCode == 200) {
+        // print(jsonDecode(response.body));
+        // final loginResponse = jsonDecode(response.body);
+        // await secureStorage.writeSecureData("auth_token", loginResponse['token']);
+        Get.offAll(() => const MyHomePage());
+        // print(loginResponse['token']);
+      }
+    } catch (e) {
+      print(e);
     }
-    return;
   }
 
   Future<Map<String, dynamic>> registerUser(
@@ -107,10 +112,13 @@ class DjangoApiClient {
   }
 
   Future<List<Map<String, dynamic>>> getCurrentUser() async {
-    final token = secureStorage.readSecureData("auth_token");
+    final token = await secureStorage.readSecureData("auth_token");
     final response = await http.get(
       Uri.parse('$baseUrl/get_current_user_profile/'),
-      headers: {'Authorization': 'Token $token'},
+      headers: {
+        'Accept': '*/*',
+        'Authorization': 'Token 7252953d02bfe26a81500fd43a6703858c30d1ec',
+      },
     );
 
     if (response.statusCode == 200) {

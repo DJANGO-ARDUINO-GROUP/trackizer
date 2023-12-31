@@ -55,7 +55,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 onTap: () {
                   djangoApiClient.loginUser(
                       _usernameController.text, _pwdController.text);
-                  Get.offAll(() => const MyHomePage());
                 },
                 child: Container(
                   margin: const EdgeInsets.symmetric(horizontal: 30),
