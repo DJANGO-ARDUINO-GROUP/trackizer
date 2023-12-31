@@ -61,7 +61,7 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    'http://localhost:49839',# Replace with your Flutter app's origin
+    'http://localhost:50731',# Replace with your Flutter app's origin
     "http://127.0.0.1:3000",  # Add any additional origins if needed
 ]
 
