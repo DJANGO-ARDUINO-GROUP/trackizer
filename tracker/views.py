@@ -24,7 +24,7 @@ def login(request):
     return Response({"token": token.key, "user": serializer.data})
 
 
-@api_view(['POST'])
+@api_view(['POST', 'OPTIONS'])
 @permission_classes([AllowAny])
 def register_user(request):
     """
