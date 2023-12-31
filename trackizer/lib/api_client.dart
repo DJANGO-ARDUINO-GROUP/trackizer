@@ -5,7 +5,7 @@ import 'package:trackizer/secure_storage.dart';
 import 'package:get/get.dart';
 
 class DjangoApiClient {
-  final String baseUrl = 'http://127.0.0.1:8000/api';
+  final String baseUrl = 'https://group-api.onrender.com/api';
   final SecureStorage secureStorage = SecureStorage();
 
   Future logOut() async {
@@ -16,7 +16,10 @@ class DjangoApiClient {
   Future<void> loginUser(String username, String password) async {
     final response = await http.post(
       Uri.parse('$baseUrl/login/'),
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': '*/*',
+      },
       body: jsonEncode({'username': username, 'password': password}),
     );
 
@@ -25,7 +28,7 @@ class DjangoApiClient {
       // final loginResponse = jsonDecode(response.body);
       // await secureStorage.writeSecureData("auth_token", loginResponse['token']);
       // print(loginResponse['token']);
-    } 
+    }
     return;
   }
 
