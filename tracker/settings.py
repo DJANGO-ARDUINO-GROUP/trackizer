@@ -60,7 +60,8 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:50152',  # Add any additional origins if needed
+    'http://localhost:50152', 
+    'https://trackizer-web-taupe.vercel.app',# Add any additional origins if needed
 ]
 
 # Optional: You can further customize CORS settings if needed
