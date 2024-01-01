@@ -1,8 +1,9 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
-import 'package:trackizer/login_screen.dart';
-import 'package:trackizer/main.dart';
+import 'package:trackizer/models/user.dart';
+import 'package:trackizer/screens/home_screen.dart';
+import 'package:trackizer/screens/login_screen.dart';
 import 'package:trackizer/secure_storage.dart';
 import 'package:get/get.dart';
 
@@ -27,12 +28,13 @@ class DjangoApiClient {
       );
 
       if (response.statusCode == 200) {
-        print(jsonDecode(response.body));
         final loginResponse = jsonDecode(response.body);
+        print(loginResponse);
         await secureStorage.writeSecureData(
             "auth_token", loginResponse['token']);
-        Get.offAll(() => const MyHomePage());
-        print(loginResponse['token']);
+        final user = userFromJson(loginResponse['user']);
+        Get.offAll(() => const HomeScreen());
+        return user;
       }
     } catch (e) {
       print(e);
@@ -42,7 +44,7 @@ class DjangoApiClient {
   Future registerUser(Map<String, dynamic> userData) async {
     try {
       final response = await http.post(
-        Uri.parse('$baseUrl/register_user/'),
+        Uri.parse('$baseUrl/register/'),
         headers: {
           'Content-Type': 'application/json',
           'Accept': '*/*',
@@ -51,34 +53,42 @@ class DjangoApiClient {
       );
 
       if (response.statusCode == 201) {
-        print(jsonDecode(response.body));
-        final loginResponse = jsonDecode(response.body);
-        await secureStorage.writeSecureData(
-            "auth_token", loginResponse['token']);
-        Get.offAll(() => const MyHomePage());
-        print(loginResponse['token']);
+        if (kDebugMode) {
+          print(jsonDecode(response.body));
+        }
+        final user = userFromJson(response.body);
+        Get.offAll(() => const LoginScreen());
+        return user;
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+    }
+  }
+
+  Future getCategoryList() async {
+    final token = await secureStorage.readSecureData("auth_token");
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrl/category_list_create/'),
+        headers: {'Authorization': 'Token $token'},
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        print(data);
+        return data;
+      } else {
+        throw Exception('Failed to fetch categories');
       }
     } catch (e) {
       print(e);
     }
   }
 
-  Future<List<Map<String, dynamic>>> getCategoryList() async {
-    final token = secureStorage.readSecureData("auth_token");
-    final response = await http.get(
-      Uri.parse('$baseUrl/category_list_create/'),
-      headers: {'Authorization': 'Token $token'},
-    );
-
-    if (response.statusCode == 200) {
-      return List<Map<String, dynamic>>.from(jsonDecode(response.body));
-    } else {
-      throw Exception('Failed to fetch categories');
-    }
-  }
-
-  Future createCategory(Map<String, dynamic> categoryData) async {
-    final token = secureStorage.readSecureData("auth_token");
+  Future createCategory(String categoryData) async {
+    final token = await secureStorage.readSecureData("auth_token");
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/categories/'),
@@ -86,30 +96,36 @@ class DjangoApiClient {
           'Authorization': 'Token $token',
           'Content-Type': 'application/json'
         },
-        body: jsonEncode(categoryData),
+        body: jsonEncode(
+          {
+            'name': categoryData,
+          },
+        ),
       );
 
       if (response.statusCode == 201) {
         final data = jsonDecode(response.body);
         print(data);
         return data;
-      } else {
-        throw Exception('Failed to create category');
       }
     } catch (e) {
       print(e);
     }
   }
 
-  Future<void> deleteCategory(int categoryId) async {
-    final token = secureStorage.readSecureData("auth_token");
-    final response = await http.delete(
-      Uri.parse('$baseUrl/categories/$categoryId/'),
-      headers: {'Authorization': 'Token $token'},
-    );
+  Future deleteCategory(int categoryId) async {
+    final token = await secureStorage.readSecureData("auth_token");
+    try {
+      final response = await http.delete(
+        Uri.parse('$baseUrl/categories/$categoryId/'),
+        headers: {'Authorization': 'Token $token'},
+      );
 
-    if (response.statusCode != 204) {
-      throw Exception('Failed to delete category');
+      if (response.statusCode != 204) {
+        throw Exception('Failed to delete category');
+      }
+    } catch (e) {
+      print(e);
     }
   }
 
@@ -128,7 +144,7 @@ class DjangoApiClient {
   }
 
   Future getCurrentUser() async {
-    final String token = await secureStorage.readSecureData("auth_token");
+    final token = await secureStorage.readSecureData("auth_token");
     try {
       final response = await http.get(
         Uri.parse('$baseUrl/get_current_user_profile/'),

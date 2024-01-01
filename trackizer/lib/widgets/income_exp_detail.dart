@@ -23,6 +23,7 @@ class incomeExpDet extends StatelessWidget {
           title,
           style: const TextStyle(
             fontWeight: FontWeight.bold,
+            color: Colors.white
           ),
         ),
         FutureBuilder(
@@ -41,7 +42,7 @@ class incomeExpDet extends StatelessWidget {
                 return const CircularProgressIndicator();
               }
               return Text(
-                '"\$000"',
+                '\$000',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 22,
