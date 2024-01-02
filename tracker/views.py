@@ -131,6 +131,9 @@ def expense_list_create(request):
 
         serializer = ExpenseSerializer(data=request_data, context={'request': request})
         if serializer.is_valid():
+            user_profile = UserProfile.objects.get(user=request.user)
+            user_profile.balance -= serializer.validated_data['amount']
+            user_profile.save()
             serializer.save(user=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -116,22 +116,23 @@ class DjangoApiClient {
 
   Future updateBalance(int bal, String operation) async {
     final String token = await secureStorage.readSecureData("auth_token");
-    final response = await http.put(
-      Uri.parse('$baseUrl/update_balance/'),
-      body: {
-        'amount': bal,
-        'operation': operation,
-      },
-      headers: {
-        'Accept': '*/*',
-        'Authorization': 'Token $token',
-      },
-    );
+
     try {
+      final response = await http.put(
+        Uri.parse('$baseUrl/update_balance/'),
+        body: jsonEncode(
+          {
+            'amount': bal,
+            'operation': operation,
+          },
+        ),
+        headers: {
+          'Accept': '*/*',
+          'Authorization': 'Token $token',
+          'Content-Type': 'application/json',
+        },
+      );
       if (response.statusCode == 200) {
-        if (kDebugMode) {
-          print('Balance updated successfully!');
-        }
         Get.snackbar(
           "",
           "",
@@ -183,7 +184,7 @@ class DjangoApiClient {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        print(data);
+
         return data;
       } else {
         throw Exception('Failed to fetch categories');
@@ -211,11 +212,45 @@ class DjangoApiClient {
 
       if (response.statusCode == 201) {
         final data = jsonDecode(response.body);
-        print(data);
+        Get.snackbar(
+          "",
+          "",
+          titleText: const Text(
+            "Success!",
+            style: TextStyle(color: Colors.white),
+          ),
+          messageText: Text(
+            "Created category: ${data['name']}",
+            style: const TextStyle(color: Colors.white),
+          ),
+          backgroundColor: Colors.green,
+        );
         return data;
+      } else {
+        Get.snackbar(
+          "",
+          "",
+          titleText: const Text(
+            "Error",
+            style: TextStyle(color: Colors.white),
+          ),
+          messageText: Text(
+            "Try Again. Status code: ${response.statusCode}",
+            style: const TextStyle(color: Colors.white),
+          ),
+          backgroundColor: Colors.red,
+        );
       }
     } catch (e) {
-      print(e);
+      Get.snackbar(
+        "Error",
+        "$e",
+        titleText: Text(
+          "$e",
+          style: const TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Colors.red,
+      );
     }
   }
 
@@ -274,35 +309,66 @@ class DjangoApiClient {
     return null;
   }
 
-  Future addExpense(String title, String amount, String categoryid) async {
+  Future addExpense(
+      String title, String amount, int categoryid, String date) async {
     final String token = await secureStorage.readSecureData("auth_token");
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/expenses/'),
-        body: {
-          'title': title,
-          'amount': amount,
-          // Assuming you have a default category and account, you may need to modify this part
-          'category': categoryid, // Replace with the actual category ID
-          // 'account': '1', // Replace with the actual account ID
-        },
+        body: jsonEncode(
+          {
+            'title': title,
+            'amount': amount,
+            'category': categoryid,
+            'date': date,
+          },
+        ),
         headers: {
           'Accept': '*/*',
+          'Content-Type': 'application/json',
           'Authorization': 'Token $token',
         },
       );
 
       if (response.statusCode == 201) {
-        if (kDebugMode) {
-          print('Expense added successfully!');
-        }
+        Get.snackbar(
+          "",
+          "",
+          titleText: const Text(
+            "Success!",
+            style: TextStyle(color: Colors.white),
+          ),
+          messageText: const Text(
+            "Expense Added Successfully",
+            style: TextStyle(color: Colors.white),
+          ),
+          backgroundColor: Colors.green,
+        );
       } else {
-        if (kDebugMode) {
-          print('Failed to add expense. Status code: ${response.statusCode}');
-        }
+        Get.snackbar(
+          "",
+          "",
+          titleText: const Text(
+            "Error",
+            style: TextStyle(color: Colors.white),
+          ),
+          messageText: Text(
+            "Try Again. Status code: ${response.statusCode}",
+            style: const TextStyle(color: Colors.white),
+          ),
+          backgroundColor: Colors.red,
+        );
       }
     } catch (e) {
-      print(e);
+      Get.snackbar(
+        "Error",
+        "$e",
+        titleText: Text(
+          "$e",
+          style: const TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Colors.red,
+      );
     }
   }
 
