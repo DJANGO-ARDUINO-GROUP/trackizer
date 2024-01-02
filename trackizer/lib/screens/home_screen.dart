@@ -21,8 +21,23 @@ class _HomeScreenState extends State<HomeScreen> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _amountController = TextEditingController();
   final TextEditingController _catNameController = TextEditingController();
+  final TextEditingController _balController = TextEditingController();
   final DjangoApiClient djangoApiClient = DjangoApiClient();
   final User user = User();
+
+  late Future _balfuture;
+  @override
+  void initState() {
+    super.initState();
+    _balfuture = djangoApiClient.getCurrentUser();
+  }
+
+  Future _refresh() async {
+    // Make a new request when the refresh is triggered
+    setState(() {
+      _balfuture = djangoApiClient.getCurrentUser();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,29 +79,66 @@ class _HomeScreenState extends State<HomeScreen> {
                 style:
                     TextStyle(fontWeight: FontWeight.w500, color: Colors.white),
               ),
-              FutureBuilder(
-                  future: djangoApiClient.getCurrentUser(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      return Text(
-                        "₦${snapshot.data['balance'].toString()}",
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 22,
-                            color: Colors.white),
-                      );
-                    } else if (snapshot.connectionState ==
-                        ConnectionState.waiting) {
-                      return const CircularProgressIndicator();
-                    }
-                    return const Text(
-                      '₦000',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 22,
-                          color: Colors.white),
-                    );
-                  }),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  FutureBuilder(
+                      future: _balfuture,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return Text(
+                            "₦${snapshot.data['balance'].toString()}",
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 22,
+                                color: Colors.white),
+                          );
+                        } else if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const CircularProgressIndicator();
+                        }
+                        return const Text(
+                          '₦000',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 22,
+                              color: Colors.white),
+                        );
+                      }),
+                  //add balance
+                  GestureDetector(
+                    onTap: () {
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return CustomAlertDialog(
+                              hintText: "Enter new balance",
+                              controller: _balController,
+                              onSave: () {
+                                djangoApiClient.updateBalance(0, "add");
+                                _balController.clear();
+                                Navigator.of(context).pop();
+                                _refresh();
+                              },
+                              onCancel: Navigator.of(context).pop,
+                            );
+                          });
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 5, vertical: 5),
+                      decoration: BoxDecoration(
+                          color: Colors.deepPurpleAccent,
+                          borderRadius: BorderRadius.circular(10)),
+                      child: const Center(
+                          child: Icon(
+                        Icons.add,
+                        color: Colors.white,
+                      )),
+                    ),
+                  ),
+                ],
+              ),
               const SizedBox(height: 20),
               Container(
                 decoration: BoxDecoration(

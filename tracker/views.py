@@ -203,4 +203,7 @@ def get_all_users(request):
 def get_current_user_profile(request):
     user_profile = UserProfile.objects.get(user=request.user)
     serializer = UserProfileSerializer(user_profile)
+    balance_as_decimal = Decimal(user_profile.balance)
+    serialized_data = serializer.data
+    serialized_data['balance'] = balance_as_decimal
     return Response(serializer.data, status=status.HTTP_200_OK)

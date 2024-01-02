@@ -23,6 +23,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text(
           'Expense Tracker',
           style: TextStyle(fontWeight: FontWeight.w500),

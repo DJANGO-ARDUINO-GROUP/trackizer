@@ -114,6 +114,65 @@ class DjangoApiClient {
     }
   }
 
+  Future updateBalance(int bal, String operation) async {
+    final String token = await secureStorage.readSecureData("auth_token");
+    final response = await http.put(
+      Uri.parse('$baseUrl/update_balance/'),
+      body: {
+        'amount': bal,
+        'operation': operation,
+      },
+      headers: {
+        'Accept': '*/*',
+        'Authorization': 'Token $token',
+      },
+    );
+    try {
+      if (response.statusCode == 200) {
+        if (kDebugMode) {
+          print('Balance updated successfully!');
+        }
+        Get.snackbar(
+          "",
+          "",
+          titleText: const Text(
+            "Success!",
+            style: TextStyle(color: Colors.white),
+          ),
+          messageText: const Text(
+            "Balance updated successfully!",
+            style: TextStyle(color: Colors.white),
+          ),
+          backgroundColor: Colors.green,
+        );
+      } else {
+        Get.snackbar(
+          "",
+          "",
+          titleText: const Text(
+            "Error",
+            style: TextStyle(color: Colors.white),
+          ),
+          messageText: Text(
+            "Failed to update balance. Status code: ${response.statusCode}",
+            style: const TextStyle(color: Colors.white),
+          ),
+          backgroundColor: Colors.red,
+        );
+      }
+    } catch (e) {
+      Get.snackbar(
+        "Error",
+        "$e",
+        titleText: Text(
+          "$e",
+          style: const TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Colors.red,
+      );
+    }
+  }
+
   Future getCategoryList() async {
     final token = await secureStorage.readSecureData("auth_token");
     try {
