@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:trackizer/models/user.dart';
 import 'package:trackizer/screens/home_screen.dart';
@@ -35,9 +36,32 @@ class DjangoApiClient {
         final user = User.fromJson(loginResponse['user']);
         Get.offAll(() => const HomeScreen());
         return user;
+      } else {
+        Get.snackbar(
+          "",
+          "",
+          titleText: const Text(
+            "Error",
+            style: TextStyle(color: Colors.white),
+          ),
+          messageText: const Text(
+            "Error trying to login",
+            style: TextStyle(color: Colors.white),
+          ),
+          backgroundColor: Colors.red,
+        );
       }
     } catch (e) {
       print(e);
+      Get.snackbar(
+        "Error",
+        "$e",
+        titleText: Text(
+          "$e",
+          style: const TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Colors.red,
+      );
     }
   }
 
@@ -59,11 +83,34 @@ class DjangoApiClient {
         final user = userFromJson(response.body);
         Get.offAll(() => const LoginScreen());
         return user;
+      } else {
+        Get.snackbar(
+          "",
+          "",
+          titleText: const Text(
+            "Error",
+            style: TextStyle(color: Colors.white),
+          ),
+          messageText: const Text(
+            "Error trying to register",
+            style: TextStyle(color: Colors.white),
+          ),
+          backgroundColor: Colors.red,
+        );
       }
     } catch (e) {
       if (kDebugMode) {
         print(e);
       }
+      Get.snackbar(
+        "Error",
+        "$e",
+        titleText: Text(
+          "$e",
+          style: const TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Colors.red,
+      );
     }
   }
 
