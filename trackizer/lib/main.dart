@@ -23,9 +23,9 @@ class MyApp extends StatelessWidget {
           if (snapshot.hasData) {
             final data = snapshot.data;
             print(data);
-            return HomeScreen();
+            return const HomeScreen();
           }
-          return SignUpScreen();
+          return const SignUpScreen();
         },
       ),
       // secureStorage.readSecureData("auth_token") == null ? SignUpScreen() :

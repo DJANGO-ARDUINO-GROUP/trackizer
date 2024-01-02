@@ -10,7 +10,7 @@ class UserSerializer(serializers.ModelSerializer):
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = '__all__'
+        fields = ['id', 'name']
 
 class UserProfileSerializer(serializers.ModelSerializer):
     user = UserSerializer()
@@ -27,7 +27,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
 class ExpenseSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
-
+    category_name = serializers.SerializerMethodField()
     class Meta:
         model = Expense
         fields = '__all__'
@@ -36,3 +36,6 @@ class ExpenseSerializer(serializers.ModelSerializer):
         if value < 0:
             raise serializers.ValidationError("Amount must be non-negative.")
         return value
+    
+    def get_category_name(self, obj):
+        return obj.category.name

@@ -33,7 +33,8 @@ class DjangoApiClient {
         final loginResponse = jsonDecode(response.body);
         await secureStorage.writeSecureData(
             "auth_token", loginResponse['token']);
-        await secureStorage.writeSecureData("username", loginResponse['user']['username']);
+        await secureStorage.writeSecureData(
+            "username", loginResponse['user']['username']);
         Get.offAll(() => const HomeScreen());
       } else {
         Get.snackbar(
@@ -384,6 +385,39 @@ class DjangoApiClient {
       }
     } catch (e) {
       print(e);
+    }
+  }
+
+  Future getExpenseDetail(int expenseId) async {
+    final String token = await secureStorage.readSecureData("auth_token");
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrl/expenses/$expenseId/'),
+        headers: {
+          'Accept': '*/*',
+          'Authorization': 'Token $token',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        print(data);
+        return data;
+      } else {
+        if (kDebugMode) {
+          print('Failed to get expense. Status code: ${response.statusCode}');
+        }
+      }
+    } catch (e) {
+      Get.snackbar(
+        "Error",
+        "$e",
+        titleText: Text(
+          "$e",
+          style: const TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Colors.red,
+      );
     }
   }
 
