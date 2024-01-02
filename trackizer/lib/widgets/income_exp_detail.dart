@@ -21,17 +21,15 @@ class incomeExpDet extends StatelessWidget {
       children: [
         Text(
           title,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Colors.white
-          ),
+          style:
+              const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
         FutureBuilder(
             future: future,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 return Text(
-                  snapshot.data['balance'].toString(),
+                  "₦${snapshot.data['balance'].toString()}",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 22,
@@ -42,7 +40,7 @@ class incomeExpDet extends StatelessWidget {
                 return const CircularProgressIndicator();
               }
               return Text(
-                '\$000',
+                '₦0.00',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 22,

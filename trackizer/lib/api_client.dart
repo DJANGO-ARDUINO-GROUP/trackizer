@@ -32,7 +32,7 @@ class DjangoApiClient {
         print(loginResponse);
         await secureStorage.writeSecureData(
             "auth_token", loginResponse['token']);
-        final user = userFromJson(loginResponse['user']);
+        final user = User.fromJson(loginResponse['user']);
         Get.offAll(() => const HomeScreen());
         return user;
       }
@@ -71,7 +71,7 @@ class DjangoApiClient {
     final token = await secureStorage.readSecureData("auth_token");
     try {
       final response = await http.get(
-        Uri.parse('$baseUrl/category_list_create/'),
+        Uri.parse('$baseUrl/categories/'),
         headers: {'Authorization': 'Token $token'},
       );
 

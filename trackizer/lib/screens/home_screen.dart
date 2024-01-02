@@ -1,7 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:trackizer/api_client.dart';
+import 'package:trackizer/models/user.dart';
 import 'package:trackizer/widgets/custom_alert_dialog.dart';
+import 'package:trackizer/widgets/expense_bottom_sheet.dart';
 import 'package:trackizer/widgets/expense_custom_txt_field.dart';
 import 'package:trackizer/widgets/expense_tile.dart';
 import 'package:trackizer/widgets/income_exp_detail.dart';
@@ -19,6 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final TextEditingController _amountController = TextEditingController();
   final TextEditingController _catNameController = TextEditingController();
   final DjangoApiClient djangoApiClient = DjangoApiClient();
+  final User user = User();
 
   @override
   Widget build(BuildContext context) {
@@ -50,6 +54,12 @@ class _HomeScreenState extends State<HomeScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
+                "Hello There 👋",
+                style:
+                    TextStyle(fontWeight: FontWeight.w500, color: Colors.white),
+              ),
+              const SizedBox(height: 10),
+              const Text(
                 'Your Balance',
                 style:
                     TextStyle(fontWeight: FontWeight.w500, color: Colors.white),
@@ -59,16 +69,18 @@ class _HomeScreenState extends State<HomeScreen> {
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       return Text(
-                        snapshot.data['balance'].toString(),
+                        "₦${snapshot.data['balance'].toString()}",
                         style: const TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 22),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 22,
+                            color: Colors.white),
                       );
                     } else if (snapshot.connectionState ==
                         ConnectionState.waiting) {
                       return const CircularProgressIndicator();
                     }
                     return const Text(
-                      '\$000',
+                      '₦000',
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 22,
@@ -87,13 +99,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     incomeExpDet(
                       title: 'BALANCE',
-                      amount: "\$000",
+                      amount: "₦0.00",
                       future: djangoApiClient.getCurrentUser(),
                       amountColor: Colors.green,
                     ),
                     incomeExpDet(
                       title: 'EXPENSES',
-                      amount: "\$000",
+                      amount: "₦0.00",
                       future: djangoApiClient.getCurrentUser(),
                       amountColor: Colors.red,
                     ),
@@ -118,13 +130,20 @@ class _HomeScreenState extends State<HomeScreen> {
                       print(data);
                     }
                     if (data.isEmpty) {
-                      return const Text("No expenses");
+                      return const Text(
+                        "No expenses",
+                        style: TextStyle(color: Colors.white),
+                      );
                     }
                     return ListView.builder(
                       shrinkWrap: true,
                       itemCount: data.length,
                       itemBuilder: (BuildContext context, int index) {
-                        return const ExpenseTile();
+                        return ExpenseTile(
+                          title: snapshot.data[index]['title'],
+                          category: snapshot.data[index]['category'].toString(),
+                          amount: snapshot.data[index]['amount'],
+                        );
                       },
                     );
                   } else if (snapshot.connectionState ==
@@ -132,7 +151,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     return const CircularProgressIndicator();
                   }
                   return const Text(
-                    'Error',
+                    'Probably check internet',
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 22,
@@ -148,22 +167,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      showDialog(
-                          context: context,
-                          builder: (context) {
-                            return CustomAlertDialog(
-                              hintText: "+ Add Category",
-                              controller: _catNameController,
-                              onSave: () {
-                                djangoApiClient.createCategory(
-                                  _catNameController.text,
-                                );
-                                _catNameController.clear();
-                                Navigator.of(context).pop();
-                              },
-                              onCancel: Navigator.of(context).pop,
-                            );
-                          });
+                      Get.bottomSheet(
+                        ExpenseBottomSheet(),
+                      );
                     },
                     child: Container(
                       padding: const EdgeInsets.symmetric(
@@ -173,7 +179,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           borderRadius: BorderRadius.circular(10)),
                       child: const Center(
                         child: Text(
-                          'Add Category',
+                          'Select Category',
                           style: TextStyle(color: Colors.white),
                         ),
                       ),
@@ -297,6 +303,8 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
+
+
 
 // {
 //   "title":"titleController.text",
