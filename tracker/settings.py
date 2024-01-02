@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 from pathlib import Path
 from datetime import timedelta
 import os
+import dj_database_url
 
 
 
@@ -110,7 +111,7 @@ WSGI_APPLICATION = 'tracker.wsgi.application'
 #     }
 # }
 if not DEBUG:
-    DATABASES = {'default': dj_database_url.parse(os.environ.get('postgres://postgresql_trackizer_user:30neRAWztbwqTMWsUhHpO5oO4xOjzVu3@dpg-cm8aa1a1hbls73b0171g-a/postgresql_trackizer'))}
+    DATABASES = {'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))}
 else:
     DATABASES = {
         'default': {
