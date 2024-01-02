@@ -208,3 +208,11 @@ def get_current_user_profile(request):
     user_profile = UserProfile.objects.get(user=request.user)
     serializer = UserProfileSerializer(user_profile)
     return Response(serializer.data, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def get_overall_expense(request):
+    user_profile = UserProfile.objects.get(user=request.user)
+    overall_expense_amount = Expense.objects.filter(account=user_profile).aggregate(models.Sum('amount'))['amount__sum'] or 0.0
+    return Response({'overall_expense_amount': overall_expense_amount}, status=status.HTTP_200_OK)

@@ -13,6 +13,7 @@ from .views import (
     login,
     get_current_user_profile,
     delete_category,
+    get_overall_expense,
 )
 
 urlpatterns = [
@@ -26,6 +27,7 @@ urlpatterns = [
     path('api/expenses/<int:pk>/', expense_retrieve_update_destroy, name='expense_retrieve_update_destroy'),
     path('api/update_balance/', update_user_balance, name='update_user_balance'),
     path('api/get_all_users/', get_all_users, name='get_all_users'),
+    path('api/get_overall_expense/', get_overall_expense, name='get_overall_expense'),
 ]
 
 

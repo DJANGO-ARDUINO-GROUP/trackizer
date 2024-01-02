@@ -33,9 +33,11 @@ class DjangoApiClient {
         print(loginResponse);
         await secureStorage.writeSecureData(
             "auth_token", loginResponse['token']);
-        final user = User.fromJson(loginResponse['user']);
+        final user = User.fromJson(loginResponse);
         Get.offAll(() => const HomeScreen());
+        print(user.name);
         return user;
+        
       } else {
         Get.snackbar(
           "",
@@ -270,19 +272,6 @@ class DjangoApiClient {
     }
   }
 
-  Future<List<Map<String, dynamic>>> getAccountList() async {
-    final token = secureStorage.readSecureData("auth_token");
-    final response = await http.get(
-      Uri.parse('$baseUrl/accounts/'),
-      headers: {'Authorization': 'Token $token'},
-    );
-
-    if (response.statusCode == 200) {
-      return List<Map<String, dynamic>>.from(jsonDecode(response.body));
-    } else {
-      throw Exception('Failed to fetch accounts');
-    }
-  }
 
   Future getCurrentUser() async {
     final token = await secureStorage.readSecureData("auth_token");

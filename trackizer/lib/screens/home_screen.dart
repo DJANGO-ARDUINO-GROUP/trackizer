@@ -76,8 +76,8 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                "Hello There 👋",
+               Text(
+                "Hello ${user.name} 👋",
                 style:
                     TextStyle(fontWeight: FontWeight.w500, color: Colors.white),
               ),
@@ -197,16 +197,19 @@ class _HomeScreenState extends State<HomeScreen> {
                         style: TextStyle(color: Colors.white),
                       );
                     }
-                    return ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: data.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return ExpenseTile(
-                          title: snapshot.data[index]['title'],
-                          category: snapshot.data[index]['category'].toString(),
-                          amount: snapshot.data[index]['amount'],
-                        );
-                      },
+                    return SizedBox(
+                      height: 300,
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: data.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return ExpenseTile(
+                            title: snapshot.data[index]['title'],
+                            category: snapshot.data[index]['category'].toString(),
+                            amount: snapshot.data[index]['amount'],
+                          );
+                        },
+                      ),
                     );
                   } else if (snapshot.connectionState ==
                       ConnectionState.waiting) {
@@ -236,7 +239,6 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               ExpenseCustomTxtField(
                 controller: _titleController,
-                labelText: 'Expense Title',
               ),
               const SizedBox(height: 20),
               const Text(
@@ -247,7 +249,6 @@ class _HomeScreenState extends State<HomeScreen> {
               ExpenseCustomTxtField(
                 controller: _amountController,
                 keyboardType: TextInputType.number,
-                labelText: 'Expense Amount',
               ),
               const SizedBox(height: 20),
               //category
@@ -275,7 +276,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         }
                         return Obx(
                           () => Text(
-                            'Selected Category: ${controller.selectedValue.value ?? "None"}',
+                            'Category: ${controller.selectedValue.value ?? "None"}',
                             style: const TextStyle(
                               color: Colors.white,
                             ),
@@ -317,6 +318,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     controller.selectedId.value!,
                     currentDate,
                   );
+                  _titleController.clear();
+                  _amountController.clear();
                   _refresh();
                 },
                 child: Container(

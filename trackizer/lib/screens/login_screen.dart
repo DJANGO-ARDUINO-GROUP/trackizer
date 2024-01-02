@@ -19,11 +19,13 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       appBar: AppBar(
+        backgroundColor: Colors.black,
         automaticallyImplyLeading: false,
         title: const Text(
           'Expense Tracker',
-          style: TextStyle(fontWeight: FontWeight.w500),
+          style: TextStyle(fontWeight: FontWeight.w500, color: Colors.white),
         ),
       ),
       body: Padding(
@@ -34,11 +36,13 @@ class _LoginScreenState extends State<LoginScreen> {
             children: [
               const Text(
                 'LOG IN',
-                style: TextStyle(fontWeight: FontWeight.w500),
+                style:
+                    TextStyle(fontWeight: FontWeight.w500, color: Colors.white),
               ),
               const Text(
                 'Username',
-                style: TextStyle(fontWeight: FontWeight.w500),
+                style:
+                    TextStyle(fontWeight: FontWeight.w500, color: Colors.white),
               ),
               ExpenseCustomTxtField(
                 controller: _usernameController,
@@ -48,7 +52,8 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 20),
               const Text(
                 'Password',
-                style: TextStyle(fontWeight: FontWeight.w500),
+                style:
+                    TextStyle(fontWeight: FontWeight.w500, color: Colors.white),
               ),
               ExpenseCustomTxtField(
                 controller: _pwdController,
@@ -77,11 +82,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
               ),
-               Padding(
+              Padding(
                 padding: const EdgeInsets.all(8.0).copyWith(top: 16),
                 child: const Align(
                   alignment: Alignment.center,
-                  child: Text("Aleady have an account?"),
+                  child: Text(
+                    "Don't have an account?",
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
               ),
               GestureDetector(
@@ -100,7 +108,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: const Center(
                     child: Text(
                       'Go to Sign Up',
-                      style: TextStyle(color: Colors.black),
+                      style: TextStyle(color: Colors.white),
                     ),
                   ),
                 ),
