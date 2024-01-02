@@ -110,7 +110,7 @@ WSGI_APPLICATION = 'tracker.wsgi.application'
 #     }
 # }
 if not DEBUG:
-    DATABASES = {'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))}
+    DATABASES = {'default': dj_database_url.parse(os.environ.get('postgres://postgresql_trackizer_user:30neRAWztbwqTMWsUhHpO5oO4xOjzVu3@dpg-cm8aa1a1hbls73b0171g-a/postgresql_trackizer'))}
 else:
     DATABASES = {
         'default': {
