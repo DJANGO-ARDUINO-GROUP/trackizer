@@ -11,7 +11,7 @@ String userToJson(List<User> data) => json.encode(List<dynamic>.from(data.map((x
 class User {
     UserClass? user;
     String? name;
-    String? balance;
+    String? balance; 
 
     User({
         this.user,
