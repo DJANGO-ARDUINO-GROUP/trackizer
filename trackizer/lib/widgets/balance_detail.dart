@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:trackizer/api_client.dart';
 
-class incomeExpDet extends StatelessWidget {
-  incomeExpDet({
+class BalanceDet extends StatelessWidget {
+  BalanceDet({
     super.key,
     required this.title,
     required this.amount,

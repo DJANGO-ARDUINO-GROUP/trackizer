@@ -120,7 +120,7 @@ def account_list_create(request):
 @permission_classes([IsAuthenticated])
 def expense_list_create(request):
     if request.method == 'GET':
-        expenses = Expense.objects.filter(user=request.user)
+        expenses = Expense.objects.filter(user=request.user).order_by('-id')
         serializer = ExpenseSerializer(expenses, many=True)
         return Response(serializer.data)
 

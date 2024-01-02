@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:trackizer/models/expense.dart';
 import 'package:trackizer/models/user.dart';
 import 'package:trackizer/screens/home_screen.dart';
 import 'package:trackizer/screens/login_screen.dart';
@@ -30,14 +31,10 @@ class DjangoApiClient {
 
       if (response.statusCode == 200) {
         final loginResponse = jsonDecode(response.body);
-        print(loginResponse);
         await secureStorage.writeSecureData(
             "auth_token", loginResponse['token']);
-        final user = User.fromJson(loginResponse);
+        await secureStorage.writeSecureData("username", loginResponse['user']['username']);
         Get.offAll(() => const HomeScreen());
-        print(user.name);
-        return user;
-        
       } else {
         Get.snackbar(
           "",
@@ -272,7 +269,6 @@ class DjangoApiClient {
     }
   }
 
-
   Future getCurrentUser() async {
     final token = await secureStorage.readSecureData("auth_token");
     try {
@@ -378,6 +374,7 @@ class DjangoApiClient {
         if (kDebugMode) {
           print(data.runtimeType);
         }
+        print(data);
         return data;
       } else {
         if (kDebugMode) {

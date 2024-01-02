@@ -4,11 +4,13 @@ import 'package:get/get.dart';
 import 'package:trackizer/api_client.dart';
 import 'package:trackizer/controllers/dropdown_controller.dart';
 import 'package:trackizer/models/user.dart';
+import 'package:trackizer/secure_storage.dart';
 import 'package:trackizer/widgets/custom_alert_dialog.dart';
 import 'package:trackizer/widgets/category_bottom_sheet.dart';
 import 'package:trackizer/widgets/expense_custom_txt_field.dart';
+import 'package:trackizer/widgets/expense_detail.dart';
 import 'package:trackizer/widgets/expense_tile.dart';
-import 'package:trackizer/widgets/income_exp_detail.dart';
+import 'package:trackizer/widgets/balance_detail.dart';
 import 'package:intl/intl.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -25,19 +27,23 @@ class _HomeScreenState extends State<HomeScreen> {
   final TextEditingController _balController = TextEditingController();
   final DropdownController controller = Get.put(DropdownController());
   final DjangoApiClient djangoApiClient = DjangoApiClient();
+  final SecureStorage secureStorage = SecureStorage();
   final User user = User();
 
   late Future _balfuture;
+  late Future _expfuture;
   @override
   void initState() {
     super.initState();
     _balfuture = djangoApiClient.getCurrentUser();
+    _expfuture = djangoApiClient.getExpenses();
   }
 
   Future _refresh() async {
     // Make a new request when the refresh is triggered
     setState(() {
       _balfuture = djangoApiClient.getCurrentUser();
+      _expfuture = djangoApiClient.getExpenses();
     });
   }
 
@@ -76,11 +82,17 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-               Text(
-                "Hello ${user.name} 👋",
-                style:
-                    TextStyle(fontWeight: FontWeight.w500, color: Colors.white),
-              ),
+              FutureBuilder(
+                  future: secureStorage.readSecureData("username"),
+                  builder: (context, snapshot) {
+                    return Text(
+                      "Hello ${snapshot.data} 👋",
+                      style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.white),
+                    );
+                  }),
               const SizedBox(height: 10),
               const Text(
                 'Your Balance',
@@ -141,10 +153,11 @@ class _HomeScreenState extends State<HomeScreen> {
                           color: Colors.deepPurpleAccent,
                           borderRadius: BorderRadius.circular(10)),
                       child: const Center(
-                          child: Icon(
-                        Icons.add,
-                        color: Colors.white,
-                      )),
+                        child: Icon(
+                          Icons.add,
+                          color: Colors.white,
+                        ),
+                      ),
                     ),
                   ),
                 ],
@@ -159,16 +172,16 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    incomeExpDet(
+                    BalanceDet(
                       title: 'BALANCE',
                       amount: "₦0.00",
-                      future: djangoApiClient.getCurrentUser(),
+                      future: _balfuture,
                       amountColor: Colors.green,
                     ),
-                    incomeExpDet(
+                    ExpenseDet(
                       title: 'EXPENSES',
                       amount: "₦0.00",
-                      future: djangoApiClient.getCurrentUser(),
+                      future: _expfuture,
                       amountColor: Colors.red,
                     ),
                   ],
@@ -184,7 +197,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               const Divider(),
               FutureBuilder(
-                future: djangoApiClient.getExpenses(),
+                future: _expfuture,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     List<dynamic> data = snapshot.data;
@@ -198,14 +211,16 @@ class _HomeScreenState extends State<HomeScreen> {
                       );
                     }
                     return SizedBox(
-                      height: 300,
+                      height: 200,
                       child: ListView.builder(
+                        physics: const BouncingScrollPhysics(),
                         shrinkWrap: true,
                         itemCount: data.length,
                         itemBuilder: (BuildContext context, int index) {
                           return ExpenseTile(
                             title: snapshot.data[index]['title'],
-                            category: snapshot.data[index]['category'].toString(),
+                            category:
+                                snapshot.data[index]['category'].toString(),
                             amount: snapshot.data[index]['amount'],
                           );
                         },
