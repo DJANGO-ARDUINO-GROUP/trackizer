@@ -174,8 +174,9 @@ def update_user_balance(request):
     user_profile = UserProfile.objects.get(user=request.user)
 
     if request.method == 'PUT':
-        amount = request.data.get('amount', 0)
+        amount_str = request.data.get('amount', '0')
         # Determine whether to add or subtract based on the operation specified
+        amount = int(amount_str)
         operation = request.data.get('operation')
 
         if operation == 'add':
