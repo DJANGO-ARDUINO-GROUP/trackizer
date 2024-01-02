@@ -30,27 +30,18 @@ class ExpenseTile extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    SizedBox(
-                      width: 100,
+                    Text(
+                      title,
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                    Text(
+                      "($category)",
+                      style: const TextStyle(color: Colors.grey),
+                    ),
+                    Center(
                       child: Text(
-                        title,
+                        "₦$amount",
                         style: const TextStyle(color: Colors.white),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 100,
-                      child: Text(
-                        "($category)",
-                        style: const TextStyle(color: Colors.grey),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 60,
-                      child: Center(
-                        child: Text(
-                          "₦$amount",
-                          style: const TextStyle(color: Colors.white),
-                        ),
                       ),
                     ),
                   ],

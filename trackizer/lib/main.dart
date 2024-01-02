@@ -21,8 +21,6 @@ class MyApp extends StatelessWidget {
         future: secureStorage.readSecureData("auth_token"),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            final data = snapshot.data;
-            print(data);
             return const HomeScreen();
           }
           return const SignUpScreen();

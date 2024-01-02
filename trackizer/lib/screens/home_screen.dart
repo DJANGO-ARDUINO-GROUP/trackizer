@@ -220,8 +220,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         );
                       }
-                      return SizedBox(
-                        height: 200,
+                      return Container(
+                       constraints: const BoxConstraints(maxHeight: 200, minHeight: 50),
                         child: ListView.builder(
                           physics: const BouncingScrollPhysics(),
                           shrinkWrap: true,

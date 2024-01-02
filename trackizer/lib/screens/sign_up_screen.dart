@@ -25,12 +25,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
       width: 360,
       height: 640,
       child: Scaffold(
+        backgroundColor: Colors.black,
         appBar: AppBar(
+          backgroundColor: Colors.black,
           centerTitle: true,
           automaticallyImplyLeading: false,
           title: const Text(
             'Expense Tracker',
-            style: TextStyle(fontWeight: FontWeight.w500),
+            style: TextStyle(fontWeight: FontWeight.w500, color: Colors.white),
           ),
         ),
         body: Padding(
@@ -41,11 +43,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
               children: [
                 const Text(
                   'SIGN UP',
-                  style: TextStyle(fontWeight: FontWeight.w500),
+                  style: TextStyle(
+                      fontWeight: FontWeight.w500, color: Colors.white),
                 ),
                 const Text(
                   'Email',
-                  style: TextStyle(fontWeight: FontWeight.w500),
+                  style: TextStyle(
+                      fontWeight: FontWeight.w500, color: Colors.white),
                 ),
                 ExpenseCustomTxtField(
                   controller: _emailController,
@@ -54,7 +58,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 const SizedBox(height: 20),
                 const Text(
                   'Firstname',
-                  style: TextStyle(fontWeight: FontWeight.w500),
+                  style: TextStyle(
+                      fontWeight: FontWeight.w500, color: Colors.white),
                 ),
                 ExpenseCustomTxtField(
                   controller: _firstnameController,
@@ -63,7 +68,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 const SizedBox(height: 20),
                 const Text(
                   'Lastname',
-                  style: TextStyle(fontWeight: FontWeight.w500),
+                  style: TextStyle(
+                      fontWeight: FontWeight.w500, color: Colors.white),
                 ),
                 ExpenseCustomTxtField(
                   controller: _lastnameController,
@@ -72,7 +78,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 const SizedBox(height: 20),
                 const Text(
                   'Username',
-                  style: TextStyle(fontWeight: FontWeight.w500),
+                  style: TextStyle(
+                      fontWeight: FontWeight.w500, color: Colors.white),
                 ),
                 ExpenseCustomTxtField(
                   controller: _usernameController,
@@ -81,7 +88,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 const SizedBox(height: 20),
                 const Text(
                   'Password',
-                  style: TextStyle(fontWeight: FontWeight.w500),
+                  style: TextStyle(
+                      fontWeight: FontWeight.w500, color: Colors.white),
                 ),
                 ExpenseCustomTxtField(
                   controller: _pwdController,
@@ -120,7 +128,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   padding: const EdgeInsets.all(8.0).copyWith(top: 16),
                   child: const Align(
                     alignment: Alignment.center,
-                    child: Text("Aleady have an account?"),
+                    child: Text(
+                      "Aleady have an account?",
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
                 ),
                 GestureDetector(
@@ -139,7 +150,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     child: const Center(
                       child: Text(
                         'Go to login',
-                        style: TextStyle(color: Colors.black),
+                        style: TextStyle(color: Colors.white),
                       ),
                     ),
                   ),

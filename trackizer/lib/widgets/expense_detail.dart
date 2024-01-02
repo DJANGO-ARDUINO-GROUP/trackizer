@@ -32,10 +32,10 @@ class ExpenseDet extends StatelessWidget {
 
           double totalAmount = expenses
               .map((expense) => double.parse(expense['amount'].toString()))
-              .fold(0, (prev, amount) => prev + amount);
+              .fold(0.00, (prev, amount) => prev + amount);
 
                 return Text(
-                  "₦${totalAmount}0",
+                  "₦${totalAmount}",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 22,
