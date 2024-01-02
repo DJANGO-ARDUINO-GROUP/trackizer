@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:trackizer/models/expense.dart';
 import 'package:trackizer/models/user.dart';
 import 'package:trackizer/screens/home_screen.dart';
 import 'package:trackizer/screens/login_screen.dart';
@@ -52,7 +51,6 @@ class DjangoApiClient {
         );
       }
     } catch (e) {
-      print(e);
       Get.snackbar(
         "Error",
         "$e",
@@ -401,7 +399,7 @@ class DjangoApiClient {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        print(data);
+
         return data;
       } else {
         if (kDebugMode) {
@@ -448,22 +446,54 @@ class DjangoApiClient {
 
   Future deleteExpense(int expenseId) async {
     final String token = await secureStorage.readSecureData("auth_token");
-    final response = await http.delete(
-      Uri.parse('$baseUrl/expenses/$expenseId/'),
-      headers: {
-        'Accept': '*/*',
-        'Authorization': 'Token $token',
-      },
-    );
+    try {
+      final response = await http.delete(
+        Uri.parse('$baseUrl/expenses/$expenseId/'),
+        headers: {
+          'Accept': '*/*',
+          'Authorization': 'Token $token',
+        },
+      );
 
-    if (response.statusCode == 204) {
-      if (kDebugMode) {
-        print('Expense deleted successfully!');
+      if (response.statusCode == 204) {
+        Get.snackbar(
+          "",
+          "",
+          titleText: const Text(
+            "Success!",
+            style: TextStyle(color: Colors.white),
+          ),
+          messageText: const Text(
+            "Expense deleted Successfully",
+            style: TextStyle(color: Colors.white),
+          ),
+          backgroundColor: Colors.green,
+        );
+      } else {
+        Get.snackbar(
+          "",
+          "",
+          titleText: const Text(
+            "Error",
+            style: TextStyle(color: Colors.white),
+          ),
+          messageText: Text(
+            "Try Again. Status code: ${response.statusCode}",
+            style: const TextStyle(color: Colors.white),
+          ),
+          backgroundColor: Colors.red,
+        );
       }
-    } else {
-      if (kDebugMode) {
-        print('Failed to delete expense. Status code: ${response.statusCode}');
-      }
+    } catch (e) {
+      Get.snackbar(
+        "Error",
+        "$e",
+        titleText: Text(
+          "$e",
+          style: const TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Colors.red,
+      );
     }
   }
 }

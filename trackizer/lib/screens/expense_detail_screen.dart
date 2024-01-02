@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:trackizer/api_client.dart';
 
 class ExpenseDetailScreen extends StatefulWidget {
@@ -35,6 +36,14 @@ class _ExpenseDetailScreenState extends State<ExpenseDetailScreen> {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
+        leading: IconButton(
+          iconSize: 20,
+          onPressed: () {
+            Get.back();
+          },
+          color: Colors.white,
+          icon: const Icon(Icons.arrow_back_ios_new_rounded),
+        ),
         centerTitle: true,
         backgroundColor: Colors.black,
         title: const Text(
@@ -87,7 +96,7 @@ class _ExpenseDetailScreenState extends State<ExpenseDetailScreen> {
                     style: TextStyle(color: Colors.grey),
                   ),
                   Text(
-                    data['category'],
+                    data['category_name'],
                     style: const TextStyle(color: Colors.white, fontSize: 18),
                   ),
                   const SizedBox(height: 30),
@@ -101,7 +110,27 @@ class _ExpenseDetailScreenState extends State<ExpenseDetailScreen> {
                     style: const TextStyle(color: Colors.white, fontSize: 18),
                   ),
                   const SizedBox(height: 30),
-                 
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.deepPurpleAccent,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    onPressed: () async{
+                       djangoApiClient.deleteExpense(widget.expId);
+                      Get.back(
+                        result: [
+                          djangoApiClient.getExpenses(),
+                          djangoApiClient.getCurrentUser()
+                        ],
+                      );
+                    },
+                    child: const Icon(
+                      Icons.delete,
+                      color: Colors.white,
+                    ),
+                  ),
                 ],
               );
             } else if (snapshot.connectionState == ConnectionState.waiting) {

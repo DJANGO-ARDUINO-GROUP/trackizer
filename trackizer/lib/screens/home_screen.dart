@@ -30,6 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final DjangoApiClient djangoApiClient = DjangoApiClient();
   final SecureStorage secureStorage = SecureStorage();
   final User user = User();
+  final RxBool refresh = true.obs;
 
   late Future _balfuture;
   late Future _expfuture;
@@ -102,34 +103,35 @@ class _HomeScreenState extends State<HomeScreen> {
                 const Text(
                   'Your Balance',
                   style: TextStyle(
-                      fontWeight: FontWeight.w500, color: Colors.white),
+                      fontWeight: FontWeight.w500, color: Colors.grey),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     FutureBuilder(
-                        future: _balfuture,
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            return Text(
-                              "₦${snapshot.data['balance'].toString()}",
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 22,
-                                  color: Colors.white),
-                            );
-                          } else if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return const CircularProgressIndicator();
-                          }
-                          return const Text(
-                            '₦000',
-                            style: TextStyle(
+                      future: _balfuture,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return Text(
+                            "₦${snapshot.data['balance'].toString()}",
+                            style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 22,
                                 color: Colors.white),
                           );
-                        }),
+                        } else if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const CircularProgressIndicator();
+                        }
+                        return const Text(
+                          '₦000',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 22,
+                              color: Colors.white),
+                        );
+                      },
+                    ),
                     //add balance
                     GestureDetector(
                       onTap: () {
@@ -210,9 +212,12 @@ class _HomeScreenState extends State<HomeScreen> {
                         print(data);
                       }
                       if (data.isEmpty) {
-                        return const Text(
-                          "No expenses",
-                          style: TextStyle(color: Colors.white),
+                        return const Align(
+                          alignment: Alignment.center,
+                          child: Text(
+                            "No expenses",
+                            style: TextStyle(color: Colors.grey),
+                          ),
                         );
                       }
                       return SizedBox(
@@ -223,16 +228,19 @@ class _HomeScreenState extends State<HomeScreen> {
                           itemCount: data.length,
                           itemBuilder: (BuildContext context, int index) {
                             return ExpenseTile(
-                              onTap: () {
-                                Get.to(
+                              onTap: () async {
+                                var result = await Get.to(
                                   () => ExpenseDetailScreen(
                                     expId: snapshot.data[index]['id'],
                                   ),
                                 );
+                                if (result != null) {
+                                  _refresh();
+                                }
                               },
                               title: snapshot.data[index]['title'],
-                              category:
-                                  snapshot.data[index]['category'].toString(),
+                              category: snapshot.data[index]['category_name']
+                                  .toString(),
                               amount: snapshot.data[index]['amount'],
                             );
                           },
@@ -242,12 +250,14 @@ class _HomeScreenState extends State<HomeScreen> {
                         ConnectionState.waiting) {
                       return const CircularProgressIndicator();
                     }
-                    return const Text(
-                      'Probably check internet',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 22,
-                          color: Colors.white),
+                    return const Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                        'Probably check internet',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.grey),
+                      ),
                     );
                   },
                 ),
