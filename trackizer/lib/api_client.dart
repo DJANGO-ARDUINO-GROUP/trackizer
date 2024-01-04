@@ -78,9 +78,7 @@ class DjangoApiClient {
         if (kDebugMode) {
           print(jsonDecode(response.body));
         }
-        final user = userFromJson(response.body);
         Get.offAll(() => const LoginScreen());
-        return user;
       } else {
         Get.snackbar(
           "",
