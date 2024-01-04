@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:trackizer/screens/home_screen.dart';
@@ -5,7 +6,35 @@ import 'package:trackizer/screens/sign_up_screen.dart';
 import 'package:trackizer/secure_storage.dart';
 
 void main() async {
-  runApp(const MyApp());
+  final runnableApp = _buildRunnableApp(
+    isWeb: kIsWeb,
+    webAppWidth: 450.0,
+    app: const MyApp(),
+  );
+
+  runApp(runnableApp);
+}
+
+Widget _buildRunnableApp({
+  required bool isWeb,
+  required double webAppWidth,
+  required Widget app,
+}) {
+  if (!isWeb) {
+    return app;
+  }
+
+  return Container(
+    color: Colors.grey.shade900,
+    child: Center(
+      child: ClipRect(
+        child: SizedBox(
+          width: webAppWidth,
+          child: app,
+        ),
+      ),
+    ),
+  );
 }
 
 final SecureStorage secureStorage = SecureStorage();

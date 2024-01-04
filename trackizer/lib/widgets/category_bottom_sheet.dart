@@ -103,7 +103,7 @@ class _CategoryBottomSheetState extends State<CategoryBottomSheet> {
                   if (data.isEmpty) {
                     return const Center(
                       child: Text(
-                        "You have Categories. Please create one 🙏",
+                        "You have no categories. Please create one 🙏",
                         style: TextStyle(color: Colors.white),
                       ),
                     );
