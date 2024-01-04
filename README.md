@@ -1,6 +1,8 @@
 # Trackizer!
 A personal finance app that allows users to track their expenses, categorize spending, and generate expense reports.
 Built with django for backend and flutter for frontend
+Link to frontend repo: https://github.com/DJANGO-ARDUINO-GROUP/trackizer-web
+Live url: https://trackizer-web-taupe.vercel.app
 
 # Trackizer api quick start guide#
 This API was built with the Django Rest Framework (DRF) 
